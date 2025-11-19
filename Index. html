@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocConvert Pro | Word to PDF Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --warning: #ffcc00;
+            --danger: #dc3545;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            color: var(--secondary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* Converter Section */
+        .converter-section {
+            background-color: white;
+            margin: -50px auto 50px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+        }
+
+        .converter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .upload-area {
+            width: 100%;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .upload-area h3 {
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .upload-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--secondary);
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .file-info {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(67, 97, 238, 0.1);
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .file-info p {
+            margin-bottom: 10px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .convert-btn {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: none;
+        }
+
+        .convert-btn:hover {
+            background-color: #3a9c35;
+        }
+
+        .download-section {
+            display: none;
+            text-align: center;
+            width: 100%;
+            padding: 20px;
+            background-color: rgba(76, 201, 240, 0.1);
+            border-radius: 8px;
+        }
+
+        .download-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+
+        .download-btn:hover {
+            background-color: #3ab0d3;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--light);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Page Content Styles */
+        .page-content {
+            padding: 80px 0;
+            background-color: white;
+        }
+
+        .page-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .page-content h2 {
+            font-size: 1.8rem;
+            margin: 30px 0 15px;
+            color: var(--secondary);
+        }
+
+        .page-content p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .page-content ul, .page-content ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .page-content li {
+            margin-bottom: 8px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                gap: 15px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .converter-section {
+                padding: 25px;
+                margin-top: -30px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            nav {
+                display: none;
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            nav.active {
+                display: block;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero {
+                padding: 60px 0;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .page-content h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <span>DocConvert Pro</span>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="about">About Us</a></li>
+                    <li><a href="#" class="nav-link" data-page="contact">Contact Us</a></li>
+                    <li><a href="#" class="nav-link" data-page="disclaimer">Disclaimer</a></li>
+                    <li><a href="#" class="nav-link" data-page="privacy">Privacy Policy</a></li>
+                    <li><a href="#" class="nav-link" data-page="terms">Terms & Conditions</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Home Page Content -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>Convert Word to PDF in Seconds</h1>
+                <p>Free online tool to convert your Microsoft Word documents to PDF format with high quality and security.</p>
+            </div>
+        </section>
+
+        <!-- Converter Section -->
+        <section class="converter-section">
+            <div class="converter-container">
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-file-upload"></i>
+                    <h3>Upload Your Word Document</h3>
+                    <p>Drag & drop your file here or click to browse</p>
+                    <p>Supported formats: .doc, .docx</p>
+                    <button class="upload-btn">Select File</button>
+                    <input type="file" id="file-input" accept=".doc,.docx">
+                </div>
+                
+                <div class="file-info" id="file-info">
+                    <p>Selected file: <span class="file-name" id="file-name"></span></p>
+                    <p>File size: <span id="file-size"></span></p>
+                </div>
+                
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                
+                <button class="convert-btn" id="convert-btn">Convert to PDF</button>
+                
+                <div class="download-section" id="download-section">
+                    <i class="fas fa-file-pdf" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
+                    <h3>Your PDF is Ready!</h3>
+                    <p>Click the button below to download your converted PDF file</p>
+                    <button class="download-btn" id="download-btn">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Why Choose Our Converter?</h2>
+                    <p>Fast, secure, and easy-to-use tool for all your document conversion needs</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-bolt"></i>
+                        <h3>Lightning Fast</h3>
+                        <p>Convert your Word documents to PDF in seconds with our optimized conversion engine.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-lock"></i>
+                        <h3>Secure & Private</h3>
+                        <p>Your files are processed securely and deleted from our servers after conversion.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Mobile Friendly</h3>
+                        <p>Use our converter on any device - desktop, tablet, or mobile phone.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-cloud-download-alt"></i>
+                        <h3>High Quality</h3>
+                        <p>Maintain the original formatting, images, and layout of your documents.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- About Us Page -->
+    <div id="about" class="page">
+        <div class="container page-content">
+            <h1>About Us</h1>
+            <p>Welcome to DocConvert Pro, your reliable solution for document conversion needs. Our mission is to provide fast, secure, and high-quality file conversion tools that are accessible to everyone.</p>
+            
+            <h2>Our Story</h2>
+            <p>Founded in 2023, DocConvert Pro was created to solve the common problem of document compatibility across different platforms and devices. We recognized the need for a simple, efficient tool that could convert Word documents to PDF format without compromising quality or security.</p>
+            
+            <h2>Our Values</h2>
+            <ul>
+                <li><strong>Simplicity:</strong> We believe in creating tools that are easy to use for everyone, regardless of technical expertise.</li>
+                <li><strong>Security:</strong> Your privacy is our priority. We ensure that your documents are processed securely and deleted after conversion.</li>
+                <li><strong>Quality:</strong> We're committed to maintaining the highest quality in document conversion, preserving formatting and layout.</li>
+                <li><strong>Accessibility:</strong> Our tools are free to use and available on all devices.</li>
+            </ul>
+            
+            <h2>Our Team</h2>
+            <p>We are a team of developers, designers, and document specialists passionate about creating solutions that make digital life easier. With years of experience in document processing and web technologies, we've built DocConvert Pro to be the most reliable conversion tool available.</p>
+        </div>
+    </div>
+
+    <!-- Contact Us Page -->
+    <div id="contact" class="page">
+        <div class="container page-content">
+            <h1>Contact Us</h1>
+            <p>We'd love to hear from you! Whether you have questions, feedback, or need support, please don't hesitate to reach out.</p>
+            
+            <h2>Get In Touch</h2>
+            <p><strong>Email:</strong> support@docconvertpro.com</p>
+            <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+            <p><strong>Address:</strong> 123 Tech Street, Digital City, DC 12345</p>
+            
+            <h2>Send Us a Message</h2>
+            <form id="contact-form" style="max-width: 600px;">
+                <div style="margin-bottom: 15px;">
+                    <label for="name" style="display: block; margin-bottom: 5px; font-weight: 600;">Your Name</label>
+                    <input type="text" id="name" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="email" style="display: block; margin-bottom: 5px; font-weight: 600;">Your Email</label>
+                    <input type="email" id="email" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="message" style="display: block; margin-bottom: 5px; font-weight: 600;">Your Message</label>
+                    <textarea id="message" rows="5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required></textarea>
+                </div>
+                <button type="submit" style="background-color: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-weight: 600; cursor: pointer;">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Disclaimer Page -->
+    <div id="disclaimer" class="page">
+        <div class="container page-content">
+            <h1>Disclaimer</h1>
+            <p>Last updated: June 15, 2023</p>
+            
+            <h2>Website Disclaimer</h2>
+            <p>The information provided by DocConvert Pro ("we," "us," or "our") on https://docconvertpro.com (the "Site") is for general informational purposes only. All information on the Site is provided in good faith, however we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the Site.</p>
+            
+            <h2>External Links Disclaimer</h2>
+            <p>The Site may contain (or you may be sent through the Site) links to other websites or content belonging to or originating from third parties. Such external links are not investigated, monitored, or checked for accuracy, adequacy, validity, reliability, availability, or completeness by us.</p>
+            
+            <h2>Professional Disclaimer</h2>
+            <p>The Site cannot and does not contain professional advice. The information is provided for general informational and educational purposes only and is not a substitute for professional advice. Accordingly, before taking any actions based upon such information, we encourage you to consult with the appropriate professionals. We do not provide any kind of professional advice.</p>
+            
+            <h2>File Conversion Disclaimer</h2>
+            <p>While we strive to provide accurate and high-quality file conversions, we do not guarantee that the converted files will be 100% identical to the original in terms of formatting, layout, or content. Complex documents with advanced formatting may not convert perfectly. We recommend checking the converted files before using them for important purposes.</p>
+            
+            <h2>Limitation of Liability</h2>
+            <p>In no event shall DocConvert Pro, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.</p>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Page -->
+    <div id="privacy" class="page">
+        <div class="container page-content">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: June 15, 2023</p>
+            
+            <h2>Introduction</h2>
+            <p>At DocConvert Pro, we respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.</p>
+            
+            <h2>Information We Collect</h2>
+            <p>We may collect, use, store and transfer different kinds of personal data about you which we have grouped together as follows:</p>
+            <ul>
+                <li><strong>Identity Data</strong> includes first name, last name, username or similar identifier.</li>
+                <li><strong>Contact Data</strong> includes email address and telephone numbers.</li>
+                <li><strong>Technical Data</strong> includes internet protocol (IP) address, your login data, browser type and version, time zone setting and location, browser plug-in types and versions, operating system and platform, and other technology on the devices you use to access this website.</li>
+                <li><strong>Usage Data</strong> includes information about how you use our website, products, and services.</li>
+            </ul>
+            
+            <h2>How We Use Your Information</h2>
+            <p>We will only use your personal data when the law allows us to. Most commonly, we will use your personal data in the following circumstances:</p>
+            <ul>
+                <li>To provide and maintain our Service</li>
+                <li>To notify you about changes to our Service</li>
+                <li>To allow you to participate in interactive features of our Service when you choose to do so</li>
+                <li>To provide customer support</li>
+                <li>To gather analysis or valuable information so that we can improve our Service</li>
+                <li>To monitor the usage of our Service</li>
+                <li>To detect, prevent and address technical issues</li>
+            </ul>
+            
+            <h2>File Processing and Security</h2>
+            <p>When you upload files to our website for conversion:</p>
+            <ul>
+                <li>Files are processed on our secure servers</li>
+                <li>We do not store your files permanently - they are automatically deleted from our servers after conversion</li>
+                <li>We do not share your files with any third parties</li>
+                <li>All file transfers are encrypted using SSL technology</li>
+            </ul>
+            
+            <h2>Your Data Protection Rights</h2>
+            <p>You have the right to:</p>
+            <ul>
+                <li>Request access to your personal data</li>
+                <li>Request correction of your personal data</li>
+                <li>Request erasure of your personal data</li>
+                <li>Object to processing of your personal data</li>
+                <li>Request restriction of processing your personal data</li>
+                <li>Request transfer of your personal data</li>
+                <li>Withdraw consent</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Page -->
+    <div id="terms" class="page">
+        <div class="container page-content">
+            <h1>Terms & Conditions</h1>
+            <p>Last updated: June 15, 2023</p>
+            
+            <h2>Agreement to Terms</h2>
+            <p>By accessing and using DocConvert Pro, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using this website's particular services, you shall be subject to any posted guidelines or rules applicable to such services.</p>
+            
+            <h2>Intellectual Property Rights</h2>
+            <p>Other than the content you own, under these Terms, DocConvert Pro and/or its licensors own all the intellectual property rights and materials contained in this Website. You are granted limited license only for purposes of viewing the material contained on this Website.</p>
+            
+            <h2>Restrictions</h2>
+            <p>You are specifically restricted from all of the following:</p>
+            <ul>
+                <li>Publishing any Website material in any other media</li>
+                <li>Selling, sublicensing and/or otherwise commercializing any Website material</li>
+                <li>Publicly performing and/or showing any Website material</li>
+                <li>Using this Website in any way that is or may be damaging to this Website</li>
+                <li>Using this Website in any way that impacts user access to this Website</li>
+                <li>Using this Website contrary to applicable laws and regulations, or in any way may cause harm to the Website, or to any person or business entity</li>
+                <li>Engaging in any data mining, data harvesting, data extracting or any other similar activity in relation to this Website</li>
+            </ul>
+            
+            <h2>Your Content</h2>
+            <p>In these Terms and Conditions, "Your Content" shall mean any audio, video, text, images or other material you choose to display on this Website. By displaying Your Content, you grant DocConvert Pro a non-exclusive, worldwide irrevocable, sub-licensable license to use, reproduce, adapt, publish, translate and distribute it in any and all media.</p>
+            
+            <h2>No warranties</h2>
+            <p>This Website is provided "as is," with all faults, and DocConvert Pro expresses no representations or warranties, of any kind related to this Website or the materials contained on this Website.</p>
+            
+            <h2>Limitation of liability</h2>
+            <p>In no event shall DocConvert Pro, nor any of its officers, directors and employees, be held liable for anything arising out of or in any way connected with your use of this Website whether such liability is under contract. DocConvert Pro, including its officers, directors and employees shall not be held liable for any indirect, consequential or special liability arising out of or in any way related to your use of this Website.</p>
+            
+            <h2>Indemnification</h2>
+            <p>You hereby indemnify to the fullest extent DocConvert Pro from and against any and/or all liabilities, costs, demands, causes of action, damages and expenses arising in any way related to your breach of any of the provisions of these Terms.</p>
+            
+            <h2>Severability</h2>
+            <p>If any provision of these Terms is found to be invalid under any applicable law, such provisions shall be deleted without affecting the remaining provisions herein.</p>
+            
+            <h2>Variation of Terms</h2>
+            <p>DocConvert Pro is permitted to revise these Terms at any time as it sees fit, and by using this Website you are expected to review these Terms on a regular basis.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>DocConvert Pro</h3>
+                    <p>Your reliable solution for fast and secure document conversion. Convert Word to PDF with ease.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-page="home">Home</a></li>
+                        <li><a href="#" class="nav-link" data-page="about">About Us</a></li>
+                        <li><a href="#" class="nav-link" data-page="contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-page="disclaimer">Disclaimer</a></li>
+                        <li><a href="#" class="nav-link" data-page="privacy">Privacy Policy</a></li>
+                        <li><a href="#" class="nav-link" data-page="terms">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> support@docconvertpro.com</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Tech Street, Digital City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 DocConvert Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const nav = document.querySelector('nav');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                nav.classList.toggle('active');
+            });
+            
+            // Page navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetPage = this.getAttribute('data-page');
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target page
+                    pages.forEach(page => {
+                        page.classList.remove('active');
+                        if (page.id === targetPage) {
+                            page.classList.add('active');
+                        }
+                    });
+                    
+                    // Close mobile menu if open
+                    nav.classList.remove('active');
+                });
+            });
+            
+            // File upload functionality
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const fileName = document.getElementById('file-name');
+            const fileSize = document.getElementById('file-size');
+            const convertBtn = document.getElementById('convert-btn');
+            const progressBar = document.getElementById('progress-bar');
+            const progress = document.getElementById('progress');
+            const downloadSection = document.getElementById('download-section');
+            const downloadBtn = document.getElementById('download-btn');
+            
+            // Trigger file input when upload area is clicked
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Handle file selection
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    
+                    // Check if file is a Word document
+                    if (fileExtension !== 'doc' && fileExtension !== 'docx') {
+                        alert('Please select a Word document (.doc or .docx)');
+                        return;
+                    }
+                    
+                    // Display file info
+                    fileName.textContent = file.name;
+                    fileSize.textContent = formatFileSize(file.size);
+                    fileInfo.style.display = 'block';
+                    convertBtn.style.display = 'block';
+                    
+                    // Reset conversion UI
+                    progressBar.style.display = 'none';
+                    progress.style.width = '0%';
+                    downloadSection.style.display = 'none';
+                }
+            });
+            
+            // Convert button click
+            convertBtn.addEventListener('click', function() {
+                if (!fileInput.files[0]) {
+                    alert('Please select a file first');
+                    return;
+                }
+                
+                // Show progress bar
+                progressBar.style.display = 'block';
+                
+                // Simulate conversion process
+                let width = 0;
+                const interval = setInterval(function() {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        
+                        // Show download section after conversion is complete
+                        setTimeout(function() {
+                            downloadSection.style.display = 'block';
+                            convertBtn.style.display = 'none';
+                        }, 500);
+                    } else {
+                        width += 10;
+                        progress.style.width = width + '%';
+                    }
+                }, 200);
+            });
+            
+            // Download button click
+            downloadBtn.addEventListener('click', function() {
+                alert('In a real implementation, this would download your converted PDF file. For this demo, the conversion process has been simulated.');
+                
+                // Reset the form
+                fileInput.value = '';
+                fileInfo.style.display = 'none';
+                progressBar.style.display = 'none';
+                progress.style.width = '0%';
+                downloadSection.style.display = 'none';
+                convertBtn.style.display = 'none';
+            });
+            
+            // Contact form submission
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Thank you for your message! We will get back to you soon.');
+                    this.reset();
+                });
+            }
+            
+            // Helper function to format file size
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        });
+    </script>
+</body>
+</html>
